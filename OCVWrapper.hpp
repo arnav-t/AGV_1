@@ -8,6 +8,15 @@ class OCVWrapper
 {
 private:
 	cv::Mat img;
+	bool inBounds(cv::Point p) const
+	{
+		if(p.y >= img.rows || p.y < 0)
+			return false;
+		else if(p.x >= img.cols || p.x < 0)
+			return false;
+		else 
+			return true;
+	}
 public:
 	OCVWrapper(std::string path, bool color)
 	{
@@ -30,5 +39,14 @@ public:
 	{
 		cv::waitKey(wait);
 	}
-	
+	template <class T>
+	T getPixel(cv::Point p) const
+	{
+		if(!inBounds(p))
+			return -1;
+		else if(img.channels() == 1)
+			return img.at<uchar>(p.y, p.x);
+		else if(img.channels() == 3)
+			return img.at<cv::Vec3b>(p.y, p.x);
+	}
 };
