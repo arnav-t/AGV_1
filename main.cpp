@@ -9,14 +9,21 @@
 #include "PathPlanner.hpp"
 #endif
 
+#ifndef Prelims_HPP
+#include "Prelims.hpp"
+#endif
+
+#define IMG_PATH "a.png"
+
 using namespace std;
 using namespace cv;
 
 int main()
 {
-	OCVWrapper lena("lena.jpg",1);
-	cout << (int)lena.getPixel<Vec3b>(Point(0,0))[0] << endl;
-	lena.showImg("Full image");
-	lena.update(0);
+	OCVWrapper img(IMG_PATH, 0);
+	Point start, end;
+	Prelims(IMG_PATH, &img, start, end);
+	img.showImg("Greyscale Path");
+	img.update(0);
 	return 0;
 }

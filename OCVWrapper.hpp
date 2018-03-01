@@ -32,6 +32,15 @@ public:
 	{
 		img.release();
 	}
+	void loadImg(std::string path, bool color)
+	{
+		img = cv::imread(path, color);
+		if(!img.rows && !img.cols)
+		{
+			std::cout << "Image cannot be loaded, exiting...\n";
+			exit(1);
+		}
+	}
 	void showImg(std::string windowName) const
 	{
 		cv::imshow(windowName, img);
@@ -39,6 +48,13 @@ public:
 	void update(int wait) const
 	{
 		cv::waitKey(wait);
+	}
+	void clear()
+	{
+		if(img.channels() == 1)
+			img = cv::Scalar(0);
+		else if(img.channels() == 3)
+			img = cv::Scalar(0,0,0);
 	}
 	template <class T>
 	T getPixel(cv::Point p) const
@@ -59,5 +75,13 @@ public:
 			img.at<uchar>(p.y, p.x) = pixelValue;
 		else if(img.channels() == 3)
 			img.at<cv::Vec3b>(p.y, p.x) = pixelValue;
+	}
+	int getWidth() const
+	{
+		return img.cols;
+	}
+	int getHeight() const
+	{
+		return img.rows;
 	}
 };

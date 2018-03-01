@@ -16,5 +16,5 @@ class PathPlanner
 {
 private:
 	OCVWrapper ogImg;
-	Bitmap2D oMap, cSpace[angleDim];
+	Bitmap2D cSpace[angleDim];
 };
