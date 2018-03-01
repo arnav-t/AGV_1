@@ -84,4 +84,9 @@ public:
 	{
 		return img.rows;
 	}
+	void scaleImg(float scale)
+	{
+		cv::Size sz(img.cols*scale, img.rows*scale);
+		cv::resize(img, img, sz);
+	}
 };

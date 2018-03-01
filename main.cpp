@@ -24,5 +24,7 @@ int main()
 	OCVWrapper img(IMG_PATH, 0);
 	Point start, end;
 	Prelims(IMG_PATH, &img, start, end);
+	PathPlanner pp(start, end, &img);
+	pp.getPath();
 	return 0;
 }
