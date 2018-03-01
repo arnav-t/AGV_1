@@ -1,6 +1,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core/core.hpp"
+#include <vector>
 
 #define OCVWrapper_HPP
 
@@ -48,5 +49,15 @@ public:
 			return img.at<uchar>(p.y, p.x);
 		else if(img.channels() == 3)
 			return img.at<cv::Vec3b>(p.y, p.x);
+	}
+	template <class T>
+	void setPixel(cv::Point p, T pixelValue)
+	{
+		if(!inBounds(p))
+			return;
+		else if(img.channels() == 1)
+			img.at<uchar>(p.y, p.x) = pixelValue;
+		else if(img.channels() == 3)
+			img.at<cv::Vec3b>(p.y, p.x) = pixelValue;
 	}
 };

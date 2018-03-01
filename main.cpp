@@ -5,6 +5,10 @@
 #include "OCVWrapper.hpp"
 #endif
 
+#ifndef PathPlanner_HPP
+#include "PathPlanner.hpp"
+#endif
+
 using namespace std;
 using namespace cv;
 
