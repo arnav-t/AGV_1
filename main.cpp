@@ -15,6 +15,7 @@
 
 #define IMG_PATH "a.png"
 
+
 using namespace std;
 using namespace cv;
 
@@ -23,7 +24,5 @@ int main()
 	OCVWrapper img(IMG_PATH, 0);
 	Point start, end;
 	Prelims(IMG_PATH, &img, start, end);
-	img.showImg("Greyscale Path");
-	img.update(0);
 	return 0;
 }
