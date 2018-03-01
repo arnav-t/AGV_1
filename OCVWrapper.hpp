@@ -28,6 +28,13 @@ public:
 			exit(1);
 		}
 	}
+	OCVWrapper(int width, int height, bool color)
+	{
+		if(color)
+			img = cv::Mat(height, width, CV_8UC3, cv::Scalar(0,0,0));
+		else
+			img = cv::Mat(height, width, CV_8UC1, cv::Scalar(0));
+	}
 	~OCVWrapper()
 	{
 		img.release();
@@ -94,14 +101,14 @@ public:
 		findContours(img, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
 	}
 	template <class T>
-	void drawPoly(std::vector<cv::Point> polygon, T color)
+	void drawPoly(std::vector< std::vector<cv::Point> > polygons, T color)
 	{
-		fillConvexPoly(img, polygon, polygon.size(), color, -1);	
+		cv::fillPoly(img, polygons, color);	
 	}
 	template <class T>
-	void drawContours(std::vector<std::vector<cv::Point> > contours, T color)
+	void drawContours(std::vector<std::vector<cv::Point> > contours, T color, int lineType)
 	{
 		for(int i = 0; i < contours.size(); ++i)
-			drawContours(img, contours, i, color, -1);	
+			cv::drawContours(img, contours, i, color, lineType);	
 	}
 };
