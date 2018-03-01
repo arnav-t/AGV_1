@@ -89,4 +89,19 @@ public:
 		cv::Size sz(img.cols*scale, img.rows*scale);
 		cv::resize(img, img, sz);
 	}
+	void getContours(std::vector<cv::Vec4i> &hierarchy, std::vector< std::vector<cv::Point> > &contours)
+	{
+		findContours(img, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
+	}
+	template <class T>
+	void drawPoly(std::vector<cv::Point> polygon, T color)
+	{
+		fillConvexPoly(img, polygon, polygon.size(), color, -1);	
+	}
+	template <class T>
+	void drawContours(std::vector<std::vector<cv::Point> > contours, T color)
+	{
+		for(int i = 0; i < contours.size(); ++i)
+			drawContours(img, contours, i, color, -1);	
+	}
 };
