@@ -17,7 +17,7 @@
 const int angleDim = 16;
 float bHeight = 10;
 float bWidth = 20;
-const float scale = 0.2;
+const float scale = 1;
 
 class PathPlanner
 {
@@ -61,6 +61,11 @@ private:
 		open.push(*startNode);
 		finish = end;
 		Astar3D(open, open.top(), path, cSpace, vSpace);
+		for(int i = 0; i < path.size(); ++i)
+		{
+			path[i].x /= scale;
+			path[i].y /= scale;
+		}
 		return path;
 	}
 public:

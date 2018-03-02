@@ -2,7 +2,7 @@
 
 #define Astar3D_HPP
 
-const int greed = 1;
+const int greed = 10;
 cv::Point finish;
 
 class Node
@@ -74,6 +74,10 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, Node n, std::
 		return;
 	}
 	vSpace[z].setPixel<uchar>(cv::Point(x,y), 255);
+	/*char name[1];
+	name[0] = 48+z;
+	vSpace[z].showImg(name);
+	vSpace[z].update(1);*/
 	if(x == finish.x && y == finish.y)
 	{
 		n.addToPath(p);
@@ -83,13 +87,15 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, Node n, std::
 	}
 	for(int k = -1; k <= 1; ++k)
 	{
-		for(int j =-1; j <= 1; ++j)
+		if(z+k < 0 || z+k >= cSpace.size())
+			continue;
+		for(int j = -1; j <= 1; ++j)
 		{
 			for(int i = -1; i <= 1; ++i)
 			{
-				if(j || i || k)
-					if(cSpace[0].inBounds(cv::Point(x+i,y+j)) && (z+k > 0 && z+k < vSpace.size()))
-						if(cSpace[z+k].getPixel<uchar>(cv::Point(x+i,y+j)) < 128 || vSpace[z+k].getPixel<uchar>(cv::Point(x+i,y+j)) < 128)
+				if(i || (j || k))
+					if(cSpace[0].inBounds(cv::Point(x+i,y+j)))
+						if(cSpace[z+k].getPixel<uchar>(cv::Point(x+i,y+j)) < 128 && vSpace[z+k].getPixel<uchar>(cv::Point(x+i,y+j)) < 128)
 						{
 							Node *newNode = new Node(Point3(x+i,y+j,z+k), &n);
 							if(newNode != NULL)

@@ -108,6 +108,11 @@ public:
 		cv::fillPoly(img, polygons, color);	
 	}
 	template <class T>
+	void drawPolyLines(std::vector< std::vector<cv::Point> > polygons, T color)
+	{
+		cv::polylines(img, polygons, true, color);	
+	}
+	template <class T>
 	void drawContours(std::vector<std::vector<cv::Point> > contours, T color, int lineType)
 	{
 		for(int i = 0; i < contours.size(); ++i)
