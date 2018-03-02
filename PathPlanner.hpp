@@ -4,8 +4,12 @@
 #include "OCVWrapper.hpp"
 #endif
 
-#ifndef Bitmap2D_HPP
-#include "Bitmap2D.hpp"
+#ifndef Point3_HPP
+#include "Point3.hpp"
+#endif
+
+#ifndef Astar3D_HPP
+#include "Astar3D.hpp"
 #endif
 
 #define PathPlanner_HPP
@@ -20,11 +24,11 @@ class PathPlanner
 private:
 	OCVWrapper *imgMap;
 	cv::Point start, end;
-	//std::vector<Bitmap2D> cSpace;
+	std::vector<OCVWrapper> cSpace;
 	void createCSpace(float angle, std::vector< std::vector<cv::Point> > contours)
 	{
 		OCVWrapper cPlane(int(imgMap->getWidth()), int(imgMap->getHeight()), false);
-		cPlane.drawContours<int>(contours, 255, CV_FILLED);
+		cPlane.drawContours<uchar>(contours, 255, CV_FILLED);
 		std::vector< std::vector<cv::Point> > polygons;
 		for(int j = 0; j < contours.size(); ++j)
 		{
@@ -33,7 +37,7 @@ private:
 			{
 				cv::vector<cv::Point> rotatedRect;
 				cv::Point origin = contours[j][i];
-				// Coordinates reflected about origin because only then the minkowski sum would give a 2D configurational space
+				// Coordinates reflected about origin for the minkowski sum to give the 2D configurational space
 				rotatedRect.clear();
 				rotatedRect.push_back(origin);
 				rotatedRect.push_back(origin + cv::Point(-bHeight*sin(angle), -bHeight*cos(angle)));
@@ -43,9 +47,21 @@ private:
 				polygons.push_back(rotatedRect);
 			}
 		}
-		cPlane.drawPoly<int>(polygons, 255);
-		cPlane.showImg("ConfigSpace");
-		cPlane.update(0);
+		cPlane.drawPoly<uchar>(polygons, 255);
+		cSpace.push_back(cPlane);
+	}
+	std::vector<Point3> beginAstar3D()
+	{
+		std::vector<Point3> path;
+		std::vector<OCVWrapper> vSpace;
+		for(int i = 0; i < angleDim; ++i)
+			vSpace.push_back(OCVWrapper(int(cSpace[0].getWidth()), int(cSpace[0].getHeight()), false));
+		std::priority_queue< Node, std::vector<Node> > open;
+		Node *startNode = new Node(Point3(start.x,start.y,0));
+		open.push(*startNode);
+		finish = end;
+		Astar3D(open, open.top(), path, cSpace, vSpace);
+		return path;
 	}
 public:
 	PathPlanner(cv::Point s, cv::Point e, OCVWrapper *mapPtr)
@@ -54,7 +70,7 @@ public:
 		start = s;
 		end = e;
 	}
-	void getPath()
+	std::vector<Point3> getPath()
 	{
 		imgMap->scaleImg(scale);
 		start *= scale;
@@ -66,5 +82,6 @@ public:
 		imgMap->getContours(hierarchy, contours);
 		for(int i = 0; i < angleDim; ++i)
 			createCSpace((2*M_PI/angleDim)*i, contours);
+		return beginAstar3D();
 	}
 };

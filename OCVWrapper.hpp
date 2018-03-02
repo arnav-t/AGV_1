@@ -9,15 +9,6 @@ class OCVWrapper
 {
 private:
 	cv::Mat img;
-	bool inBounds(cv::Point p) const
-	{
-		if(p.y >= img.rows || p.y < 0)
-			return false;
-		else if(p.x >= img.cols || p.x < 0)
-			return false;
-		else 
-			return true;
-	}
 public:
 	OCVWrapper(std::string path, bool color)
 	{
@@ -34,6 +25,15 @@ public:
 			img = cv::Mat(height, width, CV_8UC3, cv::Scalar(0,0,0));
 		else
 			img = cv::Mat(height, width, CV_8UC1, cv::Scalar(0));
+	}
+	bool inBounds(cv::Point p) const
+	{
+		if(p.y >= img.rows || p.y < 0)
+			return false;
+		else if(p.x >= img.cols || p.x < 0)
+			return false;
+		else 
+			return true;
 	}
 	~OCVWrapper()
 	{
@@ -68,20 +68,22 @@ public:
 	{
 		if(!inBounds(p))
 			return -1;
-		else if(img.channels() == 1)
+		return img.at<T>(p.y, p.x);
+		/*else if(img.channels() == 1)
 			return img.at<uchar>(p.y, p.x);
 		else if(img.channels() == 3)
-			return img.at<cv::Vec3b>(p.y, p.x);
+			return img.at<cv::Vec3b>(p.y, p.x);*/
 	}
 	template <class T>
 	void setPixel(cv::Point p, T pixelValue)
 	{
 		if(!inBounds(p))
 			return;
-		else if(img.channels() == 1)
+		img.at<T>(p.y, p.x) = pixelValue;
+		/*else if(img.channels() == 1)
 			img.at<uchar>(p.y, p.x) = pixelValue;
 		else if(img.channels() == 3)
-			img.at<cv::Vec3b>(p.y, p.x) = pixelValue;
+			img.at<cv::Vec3b>(p.y, p.x) = pixelValue;*/
 	}
 	int getWidth() const
 	{
@@ -110,5 +112,13 @@ public:
 	{
 		for(int i = 0; i < contours.size(); ++i)
 			cv::drawContours(img, contours, i, color, lineType);	
+	}
+	void toGray()
+	{
+		cv::cvtColor(img, img, CV_BGR2GRAY);
+	}
+	int getChannels()
+	{
+		return img.channels();
 	}
 };
