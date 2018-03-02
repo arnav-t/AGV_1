@@ -14,7 +14,7 @@
 
 #define PathPlanner_HPP
 
-const int angleDim = 16;
+const int angleDim = 64;
 float bHeight = 10;
 float bWidth = 20;
 const float scale = 1;
