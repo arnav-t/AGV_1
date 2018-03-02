@@ -50,7 +50,7 @@ int main()
 		currPolygon.push_back(rotatedRect);
 		imgDisp.drawPolyLines<Scalar>(currPolygon, Scalar(255,0,0));
 		imgDisp.showImg("Final Path Animation");
-		imgDisp.update(2);
+		imgDisp.update(8);
 	}
 	imgFinal.drawPolyLines<Scalar>(polygons, Scalar(255,0,0));
 	imgFinal.showImg("Final Path");
