@@ -20,7 +20,10 @@ class Node
 		}
 		int getHeuristicWeight() const
 		{
-			return greed*(abs(finish.x - location.x) + abs(finish.y - location.y)) + weight;
+			int hW = greed*(abs(finish.x - location.x) + abs(finish.y - location.y)) + weight;
+			if(parent != NULL)
+				hW += abs(parent->getLocation().z - location.z);
+			return hW;
 		}
 		Point3 getLocation() const
 		{
@@ -56,54 +59,57 @@ inline bool operator<(const Node &l, const Node &r)
 }
 
 
-void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, Node n, std::vector<Point3> &p, std::vector<OCVWrapper> &cSpace, std::vector<OCVWrapper> &vSpace)
+void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<Point3> &p, std::vector<OCVWrapper> &cSpace, std::vector<OCVWrapper> &vSpace)
 {
+	if(open.empty())
+		return;
+	Node n = open.top();
+	open.pop();
 	int y = n.getLocation().y;
 	int x = n.getLocation().x;
 	int z = n.getLocation().z;
-	if(!open.empty())
-		open.pop();
+	if(x == finish.x && y == finish.y)
+	{
+		n.addToPath(p);
+		return;
+	}
 	if(!(cSpace[0].inBounds(cv::Point(x,y))))
 	{
-		Astar3D(open, open.top(), p, cSpace, vSpace);
+		Astar3D(open, p, cSpace, vSpace);
 		return;
 	}
 	if(cSpace[z].getPixel<uchar>(cv::Point(x,y)) >= 128 || vSpace[z].getPixel<uchar>(cv::Point(x,y)) >= 128)
 	{
-		Astar3D(open, open.top(), p, cSpace, vSpace);
+		Astar3D(open, p, cSpace, vSpace);
 		return;
 	}
+	std::cout << x << "," << y << "," << z << " ";
 	vSpace[z].setPixel<uchar>(cv::Point(x,y), 255);
 	/*char name[1];
 	name[0] = 48+z;
 	vSpace[z].showImg(name);
 	vSpace[z].update(1);*/
-	if(x == finish.x && y == finish.y)
-	{
-		n.addToPath(p);
-		while(!open.empty())
-			open.pop();
-		return;
-	}
 	for(int k = -1; k <= 1; ++k)
 	{
-		if(z+k < 0 || z+k >= cSpace.size())
-			continue;
 		for(int j = -1; j <= 1; ++j)
 		{
 			for(int i = -1; i <= 1; ++i)
 			{
 				if(i || (j || k))
 					if(cSpace[0].inBounds(cv::Point(x+i,y+j)))
-						if(cSpace[z+k].getPixel<uchar>(cv::Point(x+i,y+j)) < 128 && vSpace[z+k].getPixel<uchar>(cv::Point(x+i,y+j)) < 128)
+					{
+						int Z = (z+k)%cSpace.size();
+						if(cSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) < 128 && vSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) == 0)
 						{
-							Node *newNode = new Node(Point3(x+i,y+j,z+k), &n);
+							Node *newNode = new Node(Point3(x+i,y+j,Z), &n);
 							if(newNode != NULL)
 								open.push(*newNode);
 						}
+					}
 			}
 		}
 	}
+	std::cout << open.size() << std::endl;
 	if(!open.empty())
-		Astar3D(open, open.top(), p, cSpace, vSpace);
+		Astar3D(open, p, cSpace, vSpace);
 }

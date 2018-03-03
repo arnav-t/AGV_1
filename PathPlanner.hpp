@@ -60,7 +60,7 @@ private:
 		Node *startNode = new Node(Point3(start.x,start.y,0));
 		open.push(*startNode);
 		finish = end;
-		Astar3D(open, open.top(), path, cSpace, vSpace);
+		Astar3D(open, path, cSpace, vSpace);
 		for(int i = 0; i < path.size(); ++i)
 		{
 			path[i].x /= scale;
