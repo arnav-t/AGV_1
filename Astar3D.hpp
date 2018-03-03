@@ -2,7 +2,7 @@
 
 #define Astar3D_HPP
 
-const int greed = 10;
+const int greed = 1;
 cv::Point finish;
 
 class Node
@@ -20,7 +20,7 @@ class Node
 		}
 		int getHeuristicWeight() const
 		{
-			int hW = greed*(abs(finish.x - location.x) + abs(finish.y - location.y)) + weight;
+			int hW = greed*10*(abs(finish.x - location.x) + abs(finish.y - location.y)) +  weight;
 			if(parent != NULL)
 				hW += abs(parent->getLocation().z - location.z);
 			return hW;
@@ -59,7 +59,7 @@ inline bool operator<(const Node &l, const Node &r)
 }
 
 
-void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<Point3> &p, std::vector<OCVWrapper> &cSpace, std::vector<OCVWrapper> &vSpace)
+void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<Point3> &p, std::vector<OCVWrapper> &cSpace)
 {
 	if(open.empty())
 		return;
@@ -75,20 +75,20 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 	}
 	if(!(cSpace[0].inBounds(cv::Point(x,y))))
 	{
-		Astar3D(open, p, cSpace, vSpace);
+		Astar3D(open, p, cSpace);
 		return;
 	}
-	if(cSpace[z].getPixel<uchar>(cv::Point(x,y)) >= 128 || vSpace[z].getPixel<uchar>(cv::Point(x,y)) >= 128)
+	if(cSpace[z].getPixel<uchar>(cv::Point(x,y)) >= 128)
 	{
-		Astar3D(open, p, cSpace, vSpace);
+		Astar3D(open, p, cSpace);
 		return;
 	}
 	std::cout << x << "," << y << "," << z << " ";
-	vSpace[z].setPixel<uchar>(cv::Point(x,y), 255);
+	cSpace[z].setPixel<uchar>(cv::Point(x,y), 255);
 	/*char name[1];
 	name[0] = 48+z;
-	vSpace[z].showImg(name);
-	vSpace[z].update(1);*/
+	cSpace[z].showImg(name);
+	cSpace[z].update(1);*/
 	for(int k = -1; k <= 1; ++k)
 	{
 		for(int j = -1; j <= 1; ++j)
@@ -99,7 +99,7 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 					if(cSpace[0].inBounds(cv::Point(x+i,y+j)))
 					{
 						int Z = (z+k)%cSpace.size();
-						if(cSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) < 128 && vSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) == 0)
+						if(cSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) < 128)
 						{
 							Node *newNode = new Node(Point3(x+i,y+j,Z), &n);
 							if(newNode != NULL)
@@ -111,5 +111,5 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 	}
 	std::cout << open.size() << std::endl;
 	if(!open.empty())
-		Astar3D(open, p, cSpace, vSpace);
+		Astar3D(open, p, cSpace);
 }

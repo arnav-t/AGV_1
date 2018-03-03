@@ -16,7 +16,7 @@
 
 const int angleDim = 64;
 float bHeight = 10;
-float bWidth = 20;
+float bWidth = 25;
 const float scale = 1;
 
 class PathPlanner
@@ -53,14 +53,14 @@ private:
 	std::vector<Point3> beginAstar3D()
 	{
 		std::vector<Point3> path;
-		std::vector<OCVWrapper> vSpace;
+		/*std::vector<OCVWrapper> vSpace;
 		for(int i = 0; i < angleDim; ++i)
-			vSpace.push_back(OCVWrapper(int(cSpace[0].getWidth()), int(cSpace[0].getHeight()), false));
+			vSpace.push_back(OCVWrapper(int(cSpace[0].getWidth()), int(cSpace[0].getHeight()), false));*/
 		std::priority_queue< Node, std::vector<Node> > open;
 		Node *startNode = new Node(Point3(start.x,start.y,0));
 		open.push(*startNode);
 		finish = end;
-		Astar3D(open, path, cSpace, vSpace);
+		Astar3D(open, path, cSpace);
 		for(int i = 0; i < path.size(); ++i)
 		{
 			path[i].x /= scale;
