@@ -16,7 +16,7 @@
 
 const int angleDim = 64;
 float bHeight = 10;
-float bWidth = 25;
+float bWidth = 20;
 const float scale = 1;
 
 class PathPlanner

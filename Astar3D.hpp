@@ -83,8 +83,8 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 		Astar3D(open, p, cSpace);
 		return;
 	}
-	std::cout << x << "," << y << "," << z << " ";
-	cSpace[z].setPixel<uchar>(cv::Point(x,y), 255);
+	//std::cout << x << "," << y << "," << z << " ";
+	cSpace[z].setPixel<uchar>(cv::Point(x,y), 128);
 	/*char name[1];
 	name[0] = 48+z;
 	cSpace[z].showImg(name);
