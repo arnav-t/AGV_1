@@ -109,7 +109,7 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 			}
 		}
 	}
-	std::cout << open.size() << std::endl;
+	//std::cout << open.size() << std::endl;
 	if(!open.empty())
 		Astar3D(open, p, cSpace);
 }
