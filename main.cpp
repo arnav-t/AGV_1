@@ -20,8 +20,13 @@ const int everyNth = 15;
 using namespace std;
 using namespace cv;
 
-int main()
+int main(int argc, char *argv[])
 {
+	if(argc == 3)
+	{
+		bWidth = stoi(argv[1]);
+		bHeight = stoi(argv[2]);
+	}
 	OCVWrapper img(IMG_PATH, 0);
 	Point start, end;
 	Prelims(IMG_PATH, &img, start, end);
