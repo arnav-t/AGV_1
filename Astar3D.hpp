@@ -20,7 +20,7 @@ class Node
 		}
 		int getHeuristicWeight() const
 		{
-			int hW = greed*10*abs((finish.x - location.x) + abs(finish.y - location.y)) +  weight;
+			int hW = greed*10*(abs(finish.x - location.x) + abs(finish.y - location.y)) +  weight;
 			if(parent != NULL)
 				hW += abs(parent->getLocation().z - location.z);
 			return hW;
