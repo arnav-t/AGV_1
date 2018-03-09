@@ -20,7 +20,7 @@ class Node
 		}
 		int getHeuristicWeight() const
 		{
-			int hW = greed*10*(abs(finish.x - location.x) + abs(finish.y - location.y)) +  weight;
+			int hW = greed*10*abs((finish.x - location.x) + abs(finish.y - location.y)) +  weight;
 			if(parent != NULL)
 				hW += abs(parent->getLocation().z - location.z);
 			return hW;
@@ -62,7 +62,10 @@ inline bool operator<(const Node &l, const Node &r)
 void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<Point3> &p, std::vector<OCVWrapper> &cSpace)
 {
 	if(open.empty())
+	{
+		std::cout << "\nRan out of nodes...\n";	
 		return;
+	}
 	Node n = open.top();
 	open.pop();
 	int y = n.getLocation().y;
@@ -85,10 +88,10 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 	}
 	//std::cout << x << "," << y << "," << z << " ";
 	cSpace[z].setPixel<uchar>(cv::Point(x,y), 128);
-	/*char name[1];
-	name[0] = 48+z;
-	cSpace[z].showImg(name);
-	cSpace[z].update(1);*/
+	//char name[1];
+	//name[0] = 48+z;
+	//cSpace[0].showImg("base");
+	//cSpace[0].update(1);
 	for(int k = -1; k <= 1; ++k)
 	{
 		for(int j = -1; j <= 1; ++j)
@@ -99,7 +102,7 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 					if(cSpace[0].inBounds(cv::Point(x+i,y+j)))
 					{
 						int Z = (z+k)%cSpace.size();
-						if(cSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) < 128)
+						if(cSpace[Z].getPixel<uchar>(cv::Point(x+i,y+j)) == 0)
 						{
 							Node *newNode = new Node(Point3(x+i,y+j,Z), &n);
 							if(newNode != NULL)
@@ -109,7 +112,9 @@ void Astar3D(std::priority_queue< Node, std::vector<Node> > &open, std::vector<P
 			}
 		}
 	}
-	//std::cout << open.size() << std::endl;
+	//std::cout << "Memory occupied: " << open.size()*sizeof(Node)/1000000.f << " MB\n";
 	if(!open.empty())
 		Astar3D(open, p, cSpace);
+	else
+		std::cout << "\nRan out of nodes...\n";
 }

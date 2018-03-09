@@ -13,7 +13,7 @@
 #include "Prelims.hpp"
 #endif
 
-#define IMG_PATH "a.png"
+#define IMG_PATH "new.png"
 
 const int everyNth = 15;
 
